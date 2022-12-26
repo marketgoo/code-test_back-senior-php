@@ -5,10 +5,12 @@
 require __DIR__."/vendor/autoload.php";
 
 use Psr\Http\Message\ServerRequestInterface as Request;
-use Psr\Http\Message\ResponseInterface as Response;
+use Slim\Http\Response as Response;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Schema;
+use Slim\Factory\AppFactory;
+use GraphQL\Error\DebugFlag;
 
 // Datos estáticos que modelan los resultados de la consulta GraphQL
 $users = [
@@ -29,10 +31,10 @@ $graphql_user_type = new ObjectType([
 
 // Instanciamos la aplicación Slim. Es tan sencilla que sólo vamos a usar aquí
 // la ruta "/graphql" para este test. Todo lo demás es por defecto.
-$app = new Slim\App();
+$app = AppFactory::create();
 $app->map(["GET", "POST"], "/graphql", function(Request $request, Response $response) {
     global $users, $graphql_user_type;
-    $debug = \GraphQL\Error\Debug::INCLUDE_DEBUG_MESSAGE | \GraphQL\Error\Debug::INCLUDE_TRACE;
+    $debug = DebugFlag::INCLUDE_DEBUG_MESSAGE | DebugFlag::INCLUDE_TRACE;
     try {
         $graphQLServer = new \GraphQL\Server\StandardServer([
             "schema" => new Schema([
@@ -59,12 +61,12 @@ $app->map(["GET", "POST"], "/graphql", function(Request $request, Response $resp
                     ]
                 ])
             ]),
-            "debug" => $debug
+            "debugFlag" => $debug
         ]);
 
         return $graphQLServer->processPsrRequest($request, $response, $response->getBody());
     } catch (\Exception $e) {
-        return $response->withStatus($e->getCode() ?? 500)->withJson([
+        return $response->withStatus($e?->getCode() ?: 500)->withJson([
             "errors" => [\GraphQL\Error\FormattedError::createFromException($e, $debug)]
         ]);
     }

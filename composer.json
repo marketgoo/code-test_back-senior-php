@@ -9,9 +9,10 @@
         }
     ],
     "require": {
-        "slim/slim": "^3.11",
-        "webonyx/graphql-php": "^0.12.6",
-        "guzzlehttp/guzzle": "^6.3",
-        "phpunit/phpunit": "^7.4"
+        "slim/slim": "4.*",
+        "webonyx/graphql-php": "^14.11",
+        "guzzlehttp/guzzle": "^7.5",
+        "phpunit/phpunit": "^9",
+        "slim/http": "^1.3"
     }
 }
