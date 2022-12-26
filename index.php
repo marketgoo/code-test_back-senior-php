@@ -1,8 +1,9 @@
 <?php
+
 /**
  * Prueba de código para MarketGoo. ¡Lee el README.md!
  */
-require __DIR__."/vendor/autoload.php";
+require __DIR__ . "/vendor/autoload.php";
 require_once('helpers/GeoLocator.php');
 
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -35,7 +36,7 @@ $graphql_user_type = new ObjectType([
 // Instanciamos la aplicación Slim. Es tan sencilla que sólo vamos a usar aquí
 // la ruta "/graphql" para este test. Todo lo demás es por defecto.
 $app = AppFactory::create();
-$app->map(["GET", "POST"], "/graphql", function(Request $request, Response $response) {
+$app->map(["GET", "POST"], "/graphql", function (Request $request, Response $response) {
     global $users, $graphql_user_type;
     $debug = DebugFlag::INCLUDE_DEBUG_MESSAGE | DebugFlag::INCLUDE_TRACE;
     try {
@@ -55,7 +56,7 @@ $app->map(["GET", "POST"], "/graphql", function(Request $request, Response $resp
                         ],
                         "users" => [
                             "type" => Type::listOf($graphql_user_type),
-                            "resolve" => function() use ($users) {
+                            "resolve" => function () use ($users) {
                                 return $users;
                             }
                         ]
